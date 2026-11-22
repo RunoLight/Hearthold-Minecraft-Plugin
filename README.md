@@ -1,163 +1,126 @@
-<div align="center">
+<p align="center">
+  <img src="docs/pics/hero.jpg" alt="Hearthold — clan wars, block HP, trade routes, vassalage" width="100%">
+</p>
 
-# Hearthold
+<p align="center">
+  <img src="https://img.shields.io/badge/Paper-26.3-1f6feb" alt="Paper 26.3">
+  <img src="https://img.shields.io/badge/Java-25-e76f00" alt="Java 25">
+  <img src="https://img.shields.io/badge/languages-EN%20%7C%20RU-2ea043" alt="English and Russian">
+  <img src="https://img.shields.io/badge/status-alpha-8957e5" alt="Alpha">
+</p>
 
-**A clan-war Minecraft server plugin where every block has HP, sieges end in vassalage instead of wipes, and trade is worth more than plunder.**
+<h3 align="center">The clan server where a living neighbour is worth more than a dead one.</h3>
 
-Paper 26.3 · Java 25 · SQLite · English / Русский
-
-</div>
+<p align="center">
+  <a href="../../releases/latest"><b>⬇ Download</b></a> ·
+  <a href="docs/technical.md"><b>Install &amp; configure</b></a> ·
+  <a href="docs/design.md"><b>Game rules</b></a>
+</p>
 
 ---
 
-Hearthold turns a survival server into a political sandbox. Clans claim land around a **base heart**, protect it with block HP instead of a flat claim, haul resources by **caravan** along signed **trade routes**, and can only lay siege after a **public declaration of war**. Winning a siege doesn't erase the loser — it makes them your **vassal** for two weeks and pays you tribute. A living neighbour is worth more than a dead one.
+Most clan servers end the same way: one strong group gears up in a weekend, wipes everyone in reach and is left alone on an empty map. **Hearthold** is a Paper plugin that changes the economics of that story. Bases can't be erased, sieges have a price and a schedule, resources are scattered across the map, and goods travel on foot. Clans end up needing each other, and the best loot is a trade deal or a vassal paying tribute.
 
-> Inspired by **Minto**, a clan server whose seasons kept ending the same way: a few self-sufficient clans wiped everyone else and the map went empty. Hearthold is a redesign around one idea — make clans depend on each other.
+<p align="center"><img src="docs/pics/02-trade-beats-war.jpg" alt="Trade beats war" width="100%"></p>
 
-## Contents
+## 🏰 Your base has a heart
 
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Building from source](#building-from-source)
-- [Local test server](#local-test-server)
-- [Configuration](#configuration)
-- [Languages](#languages)
-- [Commands and permissions](#commands-and-permissions)
-- [Project layout](#project-layout)
-- [Documentation](#documentation)
-- [Contributing](#contributing)
+Place a **base heart** and a protective sphere grows around your town. Extend it with **nodes**, or plant a **proxy** outpost anywhere on the map, but outposts are fragile and can be broken in a siege. Neighbours are warned when a new heart appears, and it takes time to activate.
 
-## Features
+<p align="center"><img src="docs/pics/03-base-heart.jpg" alt="Base heart, nodes and proxies" width="100%"></p>
 
-Every feature is reachable from in-game menus (the **Hearthold compass** and the **base heart menu**); commands are optional shortcuts. Full rules live in the [design document](docs/design.md).
+## 🧱 Walls have HP. Raids have a schedule.
 
-| Area | What it does |
-| --- | --- |
-| **Base heart, nodes, proxies** | A heart block claims a sphere of land; nodes extend it, proxies are fragile outposts anywhere on the map. New spheres activate with a delay and neighbours are notified. → [design](docs/design.md#protection-core) |
-| **Block HP** | No hard claims: protected blocks have HP, snap back after a hit and slowly regenerate. Damage depends on the tool, tool wear equals HP removed. Wilderness blocks have HP too, so even wood and cobble are worth something. → [design](docs/design.md#block-hp) |
-| **Prime time** | Outside prime time any hit on a foreign base removes 1 HP and wears tools ×10 — offline raids don't pay. |
-| **War, vassalage, shields** | Sieges require a public war declaration (server-wide war journal, war fatigue). Standing at the enemy heart in prime time captures it: the clan becomes your vassal for 14 days and pays 20% tribute. Beaten bases get a raid shield. Patronage lets a clan sponsor a fresh start for a wiped one. → [design](docs/design.md#war-vassalage-and-shields) |
-| **Alliances** | Mutual alliances with a defender bonus on allied land — but every ally needs its own war to siege. |
-| **Economy & upkeep** | Hearts store emeralds for daily upkeep and accumulate energy from chunks. Unpaid or abandoned bases can be captured without war. A universal buyer NPC turns loot into emeralds; death drops only part of your items. → [design](docs/design.md#economy) |
-| **Resource collectors** | Multi-block collectors produce the resource of their region; chunk energy depletes and recovers. Resources are spread across regions, so no clan produces everything. |
-| **Weight & logistics** | Inventory weight slows you down. Horses, carts, minecarts and a carrying-capacity potion matter again. → [design](docs/design.md#weight-and-logistics) |
-| **Trade routes & caravans** | Clans sign trade routes in a book, ship goods by caravan through the treasury, and missed deliveries hit public reputation. → [design](docs/design.md#trade-routes) |
-| **Timed crafting** | Smelting, brewing and crafting stations take real time. → [design](docs/design.md#timed-crafting) |
-| **Plots & prestige** | Plot hearts split a base into member plots with their own access; builds can be rated for clan prestige. |
-| **Newbie protection** | A clan's first base is cheap and can't be broken for 5 days (smaller radius, no nodes, limited containers); placing a proxy ends it early. → [design](docs/design.md#newbie-protection-and-proxies) |
-| **Bodies & compass** | A player who logs out stays in the world as a sleeping body that others can kill and loot; only bodies on your own base are hidden from compasses. The compass points to bases, bodies and events and opens every menu. → [design](docs/design.md#bodies-and-the-compass) |
-| **Events** | Admin-placed event structures with status and timers. |
-| **Roles & tags** | Leaders give members tags (builder, quartermaster, …) that grant specific rights such as chest access or placing nodes. |
-| **Web portal** | Built-in website with the live map (bases, events, players outside bases depending on clan **scouting** level), war journal, trade routes, prime time and an admin panel. Players log in with `/site`. → [design](docs/design.md#web-portal-and-map) |
-| **HUD** | Side panel showing your weight, tool durability, whose land you're on and your relation to it, chunk energy and more. |
+There are no hard claims. Every protected block has **HP**: a hit chips it down, the block snaps back, and it slowly heals. Your tool loses as much durability as the damage it dealt, so a siege needs a backpack full of pickaxes. Outside **prime time** every hit deals 1 HP and tools wear ten times faster. Offline raids just aren't worth it.
 
-## Requirements
+<table>
+  <tr>
+    <td width="50%"><img src="docs/pics/04-block-hp.jpg" alt="Every block has HP" width="100%"></td>
+    <td width="50%"><img src="docs/pics/05-prime-time.jpg" alt="Prime time" width="100%"></td>
+  </tr>
+</table>
 
-- **Paper 26.3** server (other forks of Paper may work but are untested; Spigot/Bukkit are not supported).
-- **Java 25** to run the server and to build the plugin.
-- SQLite is bundled via Paper's library loader — no external database needed.
+## ⚔️ Conquer, don't erase
 
-## Installation
+War is declared publicly and written into a server-wide journal. To win, break through the walls and **hold the heart** during prime time while bells ring and a pillar of fire rises above it. The loser isn't wiped. They become your **vassal for 14 days** and send you 20% of their output. Two weeks of income beats one night of loot, and the defeated clan gets a raid shield and stays in the game.
 
-1. Download `hearthold-<version>.jar` from the [Releases](../../releases) page (or [build it yourself](#building-from-source)).
-2. Put it into your server's `plugins/` folder.
-3. Start the server once. Hearthold creates `plugins/Hearthold/config.yml` and its database `hearthold.db`.
-4. Adjust [the config](#configuration) — at least `language`, the `map` border and `web.public-url` — then run `/hearthold reload` or restart.
-5. Optionally pre-generate the world inside the border: `/hearthold pregen start <world>`.
+<p align="center"><img src="docs/pics/06-war-vassalage.jpg" alt="Declare war, capture the heart, take a vassal" width="100%"></p>
 
-## Building from source
+## 🐎 Trade or starve
 
-```bash
-git clone https://github.com/<owner>/hearthold.git
-cd hearthold
-./gradlew build          # Windows: gradlew.bat build
-```
+Clans sign **trade routes** — "64 wool for 64 wood every three days" — and then someone has to actually carry the goods. Cargo has **weight**: overload yourself and you crawl, so horses, wagons and rails matter again. The cargo is packed into a sealed suitcase that your own courier can't open. Caravans can be ambushed on the road, and a broken contract goes on the public list of failed deals.
 
-The plugin jar is written to `build/libs/hearthold-<version>.jar`. Gradle needs a JDK 25 (via `JAVA_HOME` or `PATH`); the wrapper downloads Gradle itself.
+<table>
+  <tr>
+    <td width="50%"><img src="docs/pics/07-trade-routes.jpg" alt="Trade routes and caravans" width="100%"></td>
+    <td width="50%"><img src="docs/pics/08-weight.jpg" alt="Weight and logistics" width="100%"></td>
+  </tr>
+</table>
 
-## Local test server
+## 🗺️ No clan produces everything
 
-For development there is a one-click loop on Windows:
+Each resource comes from only a few regions: desert, plains, mountains, forest. **Collectors** on your base gather what your region offers, shared canyons and mines respawn ore and bring rival clans face to face, and a universal buyer turns any surplus into upkeep emeralds. Everything else has to be bought, traded or taken.
 
-1. Download a Paper 26.3 jar from [papermc.io](https://papermc.io/downloads/paper) and save it as `run/paper.jar`.
-2. Run the server once, read the [Minecraft EULA](https://aka.ms/MinecraftEULA) and set `eula=true` in `run/eula.txt`.
-3. Run [`start-server.bat`](start-server.bat): it builds the plugin, copies it into `run/plugins/` and starts the server in the same console (type `stop` to shut it down).
+<table>
+  <tr>
+    <td width="50%"><img src="docs/pics/09-regions.jpg" alt="Resource regions" width="100%"></td>
+    <td width="50%"><img src="docs/pics/11-web-map.jpg" alt="Live web map" width="100%"></td>
+  </tr>
+  <tr>
+    <td><b>Interdependence by design.</b> Every key resource exists in 2–3 regions at opposite ends of the map. The farther it is, the longer and riskier the route.</td>
+    <td><b>Politics are public.</b> A built-in website shows bases, events, the war journal and prime time. Clans that pay for <i>scouting</i> also see players on the move.</td>
+  </tr>
+</table>
 
-`run/` is git-ignored, so worlds and test data stay local. The script uses `JAVA_HOME` if set, otherwise `java` from `PATH`.
+## 🌙 Nowhere to hide offline
 
-## Configuration
+When you log out you stay in the world as a sleeping **body**, and anyone's compass can find it. You're safe only at home. Plan your logouts like your raids.
 
-Everything lives in `plugins/Hearthold/config.yml`, fully commented. Main sections:
+<p align="center"><img src="docs/pics/10-bodies-compass.jpg" alt="Bodies and the compass" width="100%"></p>
 
-| Section | Controls |
-| --- | --- |
-| `language` | Plugin language: `en` (default) or `ru` |
-| `heart`, `node`, `proxy`, `territory`, `base-levels` | Sphere radii, costs, activation delay, base levels and HP |
-| `block-health`, `wilderness`, `prime-time`, `defender-bonus`, `siege` | Block HP, regeneration, tool damage, prime-time schedule, capture rules |
-| `upkeep`, `energy`, `buyer`, `death` | Economy, chunk energy, buyer prices, death penalties |
-| `map`, `regions`, `neutral-zones`, `collector`, `ore-respawn` | World border, resource regions, canyons and shared mines, collectors |
-| `weight`, `trade`, `craft`, `plot` | Weight limits, trade routes and caravans, crafting times, plots |
-| `war`, `vassalage`, `patronage`, `newbie`, `events` | War fatigue, tribute, patronage, newbie protection, events |
-| `web` | Built-in web portal: `enabled`, `bind`, `port` (default `8124`), `public-url` |
+## ✨ Everything in one place
 
-Numbers are starting values and are expected to be balanced on a live server.
+<p align="center"><img src="docs/pics/01-overview.jpg" alt="A Hearthold base" width="100%"></p>
 
-## Languages
+<table>
+  <tr>
+    <td width="50%" valign="top">
 
-Hearthold ships with **English** (default) and **Russian**. Set the server language in `config.yml`:
+**For players**
+- Every action is a button: the Hearthold compass and the base heart menu cover everything. Commands are optional.
+- Roles and tags: Builder, Treasurer, Quartermaster, Trusted
+- Plots inside the base, with build ratings and clan prestige
+- Timed crafting: enchanting, brewing and cooking take real time
+- Nether wave events and overworld loot chests
+- Newbie protection for a clan's first base
+- Alliances, patronage, raid shields
 
-```yaml
-language: en   # or ru
-```
+</td>
+    <td width="50%" valign="top">
 
-Chat messages, menus, items, books, the HUD and the web portal all follow this setting. To tweak any text, copy a file from [`src/main/resources/lang/<language>/`](src/main/resources/lang) to `plugins/Hearthold/lang/<language>/` and edit only the keys you want to change — your file overrides the bundled one. Missing keys fall back to English.
+**For server owners**
+- A single jar: SQLite storage and the web portal are built in
+- English and Russian out of the box; any text can be overridden
+- Every number in a commented `config.yml`
+- An admin menu, plus a web admin panel with balance tables
+- Built-in world border and pre-generation
+- A HUD panel showing weight, territory, relations and chunk energy
 
-## Commands and permissions
+</td>
+  </tr>
+</table>
 
-| Command | Description |
-| --- | --- |
-| `/compass` | Get the Hearthold compass; right-click opens the main menu |
-| `/clan …` | Create, invite, accept, leave, info, heart, node, collector, proxy, ally, trust |
-| `/plot …` | Plots inside a base and build rating |
-| `/war …` | Declare war, peace, status, war journal, vassals, tribute, patronage |
-| `/trade` | Trade routes, treasury, caravans |
-| `/weight` | How much your load weighs |
-| `/event` | Events: places, status, timers |
-| `/site` | Login link for the web portal; `/site scouting <0-3>` sets clan scouting |
-| `/hearthold …` (alias `/hh`) | Admin: `reload`, `hp`, `prime`, `zones`, `energy`, `upkeep`, `buyer`, `region`, `ores`, `pregen`, `potion`. Without arguments opens the admin menu |
+## 🚀 Get started
 
-| Permission | Default | Grants |
-| --- | --- | --- |
-| `hearthold.admin` | op | Admin command, admin menu and admin web panel |
+1. Download `hearthold-<version>.jar` from **[Releases](../../releases/latest)**.
+2. Drop it into the `plugins/` folder of a **Paper 26.3** server running **Java 25**.
+3. Start the server, set `language`, the map border and `web.public-url` in `plugins/Hearthold/config.yml`, and run `/hearthold reload`.
 
-## Project layout
+Building from source, configuration, commands and permissions: **[technical documentation →](docs/technical.md)**
 
-```
-src/main/java/dev/hearthold/
-  base/        base heart, nodes, proxies, territory, base levels
-  health/      block HP, regeneration, prime time, damage display
-  clan/ war/   clans, alliances, wars, vassalage, capture
-  economy/     upkeep, energy, buyer, death
-  trade/       trade routes, caravans, treasury, stables
-  collector/   resource collectors and chunk resources
-  weight/      inventory weight
-  plot/ craft/ event/ newbie/ body/ map/
-  ui/          menus, compass, HUD, admin menu
-  web/         built-in web portal and JSON API
-  i18n/        Lang — translations
-src/main/resources/
-  config.yml   plugin.yml   lang/en, lang/ru   web/
-docs/          design document
-```
+---
 
-## Documentation
-
-| Document | Contents |
-| --- | --- |
-| [docs/design.md](docs/design.md) | Design document — the single source of truth for mechanics |
-| [AGENTS.md](AGENTS.md) | Contribution rules for humans and AI agents: commit format, localization, UI-first |
-
-## Contributing
-
-Issues and pull requests are welcome. Before opening a PR, read [AGENTS.md](AGENTS.md): every commit ends with a `Design-doc:` line, and any rule change must be reflected in [docs/design.md](docs/design.md) in the same commit. New player-facing text goes through `Lang.tr` with keys in both `lang/en` and `lang/ru`.
+<p align="center">
+  <sub>Inspired by <b>Minto</b>, a clan server whose seasons kept ending with an empty map. Hearthold is a redesign built around one idea: make clans depend on each other.</sub><br>
+  <sub><a href="docs/technical.md">Technical docs</a> · <a href="docs/design.md">Design document</a> · <a href="AGENTS.md">Contributing</a></sub>
+</p>

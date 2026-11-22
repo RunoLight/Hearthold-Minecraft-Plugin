@@ -5,7 +5,6 @@ rem Requires JDK 25 (JAVA_HOME or java on PATH) and a Paper server jar at run\pa
 setlocal
 chcp 65001 >nul
 set "ROOT=%~dp0"
-set "JAR=hearthold-0.1.0-SNAPSHOT.jar"
 set "JAVA=java"
 if defined JAVA_HOME if exist "%JAVA_HOME%\bin\java.exe" set "JAVA=%JAVA_HOME%\bin\java.exe"
 
@@ -26,7 +25,8 @@ if not exist "%ROOT%run\paper.jar" (
 
 echo === Copying plugin to run\plugins ===
 if not exist "%ROOT%run\plugins" mkdir "%ROOT%run\plugins"
-copy /y "%ROOT%build\libs\%JAR%" "%ROOT%run\plugins\%JAR%" >nul
+del /q "%ROOT%run\plugins\hearthold-*.jar" 2>nul
+copy /y "%ROOT%build\libs\hearthold-*.jar" "%ROOT%run\plugins\" >nul
 
 echo === Starting server (type stop to shut down) ===
 cd /d "%ROOT%run"
