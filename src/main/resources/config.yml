@@ -1,0 +1,514 @@
+# Hearthold — main config. Numbers are preliminary, see docs/design.md.
+
+# Plugin language: en (default) or ru. Translations can be overridden in plugins/Hearthold/lang/<language>/*.properties.
+language: en
+
+heart:
+  # Base heart sphere radius in blocks.
+  radius: 32
+  # Heart block material (the custom item is marked with a tag; the material is only its look).
+  material: LODESTONE
+  # Minutes after placement before the heart starts protecting blocks. Neighbours are notified.
+  activation-minutes: 30
+  # Base heart price in emeralds from the inventory (a clan's first base — newbie.first-heart-cost).
+  cost-emeralds: 32
+
+node:
+  # A node extends clan territory. It can only be placed inside existing territory.
+  radius: 16
+  material: GILDED_BLACKSTONE
+  activation-minutes: 10
+  max-per-clan: 4
+  # Node price in emeralds from the leader's inventory (/clan node or the heart menu).
+  cost-emeralds: 16
+
+territory:
+  # Clans whose spheres are closer than this (horizontally, from the sphere edge) are notified of a new sphere.
+  alert-radius: 256
+
+# Canyons and shared mines: heart and node spheres must not touch them. Blocks inside have no clan protection.
+# Example:
+# neutral-zones:
+#   - name: North Canyon
+#     world: world
+#     from: [100, -64, -400]
+#     to: [180, 120, 400]
+neutral-zones: []
+
+block-health:
+  # HP of a protected block if base-levels is not set. Otherwise HP comes from the base level.
+  protected-max-hp: 100
+  # HP regenerated per second.
+  regen-per-second: 0.5
+  # Seconds after the last hit before regeneration starts. A new block regenerates right away.
+  regen-delay-seconds: 30
+  # Tool wear per hit = HP removed from the block. On top of that: HP removed × multiplier (0 — no extra wear).
+  durability-multiplier: 0.0
+  # Seconds the HP bar is shown above a block.
+  display-seconds: 4
+
+  # Damage per hit by tool type.
+  tool-damage:
+    hand: 1
+    wooden: 2
+    stone: 3
+    copper: 4
+    golden: 2
+    iron: 5
+    diamond: 7
+    netherite: 9
+
+# Base levels. Every base starts at level 1; the leader upgrades in the heart menu, paid from the heart treasury.
+# hp — HP of a protected block on a base of this level (replaces block-health.protected-max-hp),
+# upkeep-per-day — extra daily upkeep. Levels can be added and removed.
+base-levels:
+  - {name: I, hp: 100, upgrade-cost: 0, upkeep-per-day: 0}
+  - {name: II, hp: 160, upgrade-cost: 96, upkeep-per-day: 2}
+  - {name: III, hp: 250, upgrade-cost: 256, upkeep-per-day: 5}
+
+wilderness:
+  # HP of blocks outside bases follows vanilla hardness: hardness × hardness-multiplier,
+  # but no less than min-hp and no more than max-hp. E.g. sand and dirt (0.5) — 4, stone (1.5) — 12,
+  # logs (2) — 16, ore and deepslate (3) — 24. A bare hand removes 1, an iron pickaxe 5.
+  hardness-multiplier: 8
+  min-hp: 3
+  max-hp: 60
+  # Blocks softer than this (grass, flowers, leaves, torches) break as in vanilla.
+  soft-hardness: 0.25
+  # Extra wear in the wilderness on top of HP removed: HP removed × multiplier.
+  durability-multiplier: 0.0
+  # Explicit exceptions to the formula (* patterns allowed).
+  blocks:
+    OBSIDIAN: 60
+    CRYING_OBSIDIAN: 60
+
+prime-time:
+  # Outside prime time a hit on someone else's base removes 1 HP. Windows may cross midnight.
+  zone: Europe/Moscow
+  # Empty list — every day. Otherwise: MONDAY, TUESDAY, ...
+  days: []
+  windows:
+    - "18:00-23:00"
+  # Outside prime time a tool wears out this many times faster on someone else's base (a hit removes 1 HP,
+  # but costs durability as if it were 10). An offline raid with pickaxes is even more expensive.
+  off-prime-wear: 10
+
+defender-bonus:
+  # Effects for defenders on their own territory: effect → level (0 = I).
+  effects:
+    resistance: 0
+  # Whether clan allies get the bonus.
+  allies: true
+
+build:
+  # Seconds to hold right-click to place a block. 0 — instant, as in vanilla.
+  wild-seconds: 4
+  own-base-seconds: 0
+  # Outsiders cannot build on someone else's protected base at all (an ally's included). During a war with its clan —
+  # they can, but slower than in the wilderness.
+  war-base-seconds: 8
+  # Slow down only solid blocks: torches, ladders, plants and rails are placed instantly.
+  only-solid: true
+  # Blocks that are always placed instantly. * patterns allowed.
+  instant-blocks:
+    - SCAFFOLDING
+
+upkeep:
+  # Emeralds are put into the heart (right-click with emeralds) and charged every minute.
+  # When they run out, the territory stops protecting blocks (the own clan still builds and breaks freely).
+  enabled: true
+  heart-per-day: 8
+  node-per-day: 4
+  # Emeralds on a new clan's account.
+  start-balance: 0
+  # How many days before upkeep runs out to warn the clan.
+  warn-days: 1
+  # Removal timer for a base heart without upkeep (started by the clan or its suzerain; an abandoned base starts it itself).
+  heart-removal-days: 7
+
+energy:
+  heart:
+    # Energy an active, paid-up heart accumulates per hour.
+    base-per-hour: 20
+    per-member-per-hour: 5
+    per-node-per-hour: 10
+    max: 2000
+  cell:
+    # Shift+right-click on the heart with an empty hand takes a cell with this much energy.
+    size: 100
+    material: ECHO_SHARD
+  chunk:
+    # Each chunk regenerates energy on its own up to natural-max. Above that only with cells, up to max.
+    natural-max: 20
+    regen-per-hour: 10
+    max: 1000
+  cost:
+    # How much chunk energy growth costs.
+    crop-stage: 1
+    tree: 5
+    bonemeal: 2
+    breed: 10
+  # Fertile zones: natural maximum and energy regeneration × multiplier.
+  # fertile-zones:
+  #   - name: Valley
+  #     world: world
+  #     from: [-200, -64, -200]
+  #     to: [0, 320, 0]
+  #     multiplier: 3
+  fertile-zones: []
+
+buyer:
+  # Price of one item in emeralds. The buyer takes everything except emeralds, plugin items and non-empty containers.
+  # Prices are deliberately worse than between players. Anything not listed costs default-price —
+  # make sure crafting never yields an item worth more than its ingredients.
+  default-price: 0.01
+  prices:
+    DIAMOND: 2
+    NETHERITE_INGOT: 12
+    GOLD_INGOT: 0.3
+    IRON_INGOT: 0.15
+    COPPER_INGOT: 0.03
+    COAL: 0.03
+    "*_LOG": 0.02
+    WHEAT: 0.02
+    "*_WOOL": 0.03
+    LEATHER: 0.05
+    # Blocks and nuggets — strictly proportional to ingots, otherwise crafting becomes a money printer.
+    DIAMOND_BLOCK: 18
+    GOLD_BLOCK: 2.7
+    IRON_BLOCK: 1.35
+    GOLD_NUGGET: 0.033
+    IRON_NUGGET: 0.016
+    # Cheap crafting products cost no more than the source: log 0.02 → 4 planks → 8 sticks.
+    "*_PLANKS": 0.005
+    STICK: 0.0025
+
+death:
+  # Share of items dropped on death; the rest is destroyed.
+  drop-fraction: 0.5
+
+map:
+  # Square world border: centre [x, z] and side length in blocks. Applied on startup and /hearthold reload.
+  # Then the map can be pregenerated: /hearthold pregen start <world>.
+  # borders:
+  #   - world: world
+  #     center: [0, 0]
+  #     size: 6000
+  borders: []
+  # How many chunks pregeneration requests from the server at once.
+  pregen-parallel: 8
+
+# Producer regions: what one collector inside the region yields per hour (by X and Z, height does not matter).
+# Each resource should be placed in at least 2–3 regions at different ends of the map.
+# regions:
+#   - name: Desert
+#     world: world
+#     from: [1000, -64, -500]
+#     to: [2000, 320, 500]
+#     resources: {CACTUS: 6, SAND: 20}
+#   - name: Mountains
+#     world: world
+#     from: [-2000, -64, -500]
+#     to: [-1000, 320, 500]
+#     resources: {IRON_INGOT: 2, COBBLESTONE: 30, EMERALD: 0.2}
+regions: []
+
+collector:
+  # A collector is a "Resource collector" barrel (/clan collector) on own territory in a producer region.
+  # Structure: offset boxes from the barrel and the blocks allowed in them. While the structure is broken, the collector stops.
+  structure:
+    - from: [-1, -1, -1]
+      to: [1, -1, 1]
+      blocks: [SMOOTH_STONE]
+    - from: [-1, 0, -1]
+      to: [-1, 1, -1]
+      blocks: ["*_LOG"]
+    - from: [1, 0, 1]
+      to: [1, 1, 1]
+      blocks: ["*_LOG"]
+  max-per-clan: 3
+  # A clan gets its first collector for free (once ever); each next one costs emeralds from the inventory.
+  cost-emeralds: 32
+  # How many items accumulate (in the barrel and in storage) — after that the collector stops until they are taken.
+  max-items: 576
+  # Diminishing returns: output multiplier of each collector when the clan has 1, 2, 3...
+  efficiency: [1.0, 0.75, 0.55]
+  # How often collectors produce resources, in minutes (changes apply after a restart).
+  interval-minutes: 10
+
+ore-respawn:
+  # Neutral zones (by name from neutral-zones) whose walls spawn ore on a schedule.
+  zones: []
+  interval-minutes: 30
+  # How much ore appears in each zone per run and how many random spots are checked.
+  per-run: 20
+  attempts: 400
+  # Which blocks can become ore (only exposed ones — with air on at least one side).
+  hosts: [STONE, DEEPSLATE, ANDESITE, DIORITE, GRANITE, TUFF]
+  # Ore weights. In deepslate the deepslate variant is placed automatically.
+  ores:
+    COAL_ORE: 40
+    COPPER_ORE: 25
+    IRON_ORE: 25
+    GOLD_ORE: 6
+    REDSTONE_ORE: 6
+    LAPIS_ORE: 4
+    DIAMOND_ORE: 1
+
+weight:
+  # Weight in load units: a stack of ordinary blocks = 1. A player carries player-capacity without a penalty.
+  enabled: true
+  player-capacity: 10
+  count-armor: true
+  # Overload tiers — fractions of capacity: above slow — slowness, above heavy — stronger and no sprinting,
+  # above stop — cannot move. Overloaded players cannot fly with elytra; heavily overloaded cannot throw ender pearls.
+  tiers: {slow: 1.0, heavy: 1.4, stop: 1.8}
+  # Speed at each tier (fraction of normal).
+  speed: {slow: 0.75, heavy: 0.5}
+  # Weight of one item. Anything not listed — default-item. Compression saves no weight: block = 9 ingots.
+  default-item: 0.0039
+  items:
+    # Blocks: stack = 1. Patterns are checked in order; exact names take precedence.
+    "*_ORE": 0.03
+    "RAW_*_BLOCK": 0.14
+    "RAW_*": 0.0156
+    "*_INGOT": 0.0156
+    IRON_BLOCK: 0.14
+    GOLD_BLOCK: 0.14
+    COPPER_BLOCK: 0.14
+    NETHERITE_BLOCK: 0.14
+    DIAMOND_BLOCK: 0.035
+    EMERALD_BLOCK: 0.035
+    DIAMOND: 0.0039
+    EMERALD: 0.0039
+    "*_LOG": 0.0156
+    "*_PLANKS": 0.004
+    STONE: 0.0156
+    COBBLESTONE: 0.0156
+    DEEPSLATE: 0.0156
+    COBBLED_DEEPSLATE: 0.0156
+    DIRT: 0.0156
+    SAND: 0.0156
+    GRAVEL: 0.0156
+    OBSIDIAN: 0.03
+    # Gear.
+    "*_CHESTPLATE": 0.12
+    "*_LEGGINGS": 0.1
+    "*_HELMET": 0.06
+    "*_BOOTS": 0.05
+    "*_PICKAXE": 0.04
+    "*_SWORD": 0.03
+  # Mount capacity: added to the rider's capacity; for pack animals — to the chest.
+  mounts:
+    HORSE: 8
+    DONKEY: 16
+    MULE: 20
+    LLAMA: 12
+    TRADER_LLAMA: 12
+    CAMEL: 14
+    MINECART: 30
+  potion:
+    # Carrying capacity potion: awkward potion + ingredient in a brewing stand.
+    ingredient: IRON_INGOT
+    bonus: 5
+    minutes: 8
+  storage:
+    # What can go into ender chests and shulkers (plus all food if allow-food).
+    allow-food: true
+    allowed:
+      - "*_HELMET"
+      - "*_CHESTPLATE"
+      - "*_LEGGINGS"
+      - "*_BOOTS"
+      - "*_SWORD"
+      - "*_AXE"
+      - "*_SHOVEL"
+      - "*_HOE"
+      - BOW
+      - CROSSBOW
+      - TRIDENT
+      - MACE
+      - SHIELD
+      - ELYTRA
+      - "*ARROW"
+      - TOTEM_OF_UNDYING
+      - ENDER_PEARL
+      - FIREWORK_ROCKET
+      - POTION
+      - SPLASH_POTION
+      - LINGERING_POTION
+      - FLINT_AND_STEEL
+      - SHEARS
+      - FISHING_ROD
+      - TORCH
+
+trade:
+  # Seconds to stand still: delivery at the recipient's base, cancelling and returning the animal at your own base.
+  stand-seconds: 10
+  # Price to upgrade a horse to a wagon (mule with a chest), taken from the treasury.
+  wagon-cost:
+    OAK_PLANKS: 32
+    IRON_INGOT: 8
+    CHEST: 2
+    LEAD: 1
+
+war:
+  # War duration after it starts and preparation time after it is declared (0 — immediately).
+  duration-hours: 72
+  prepare-minutes: 0
+  fatigue:
+    # Attacker fatigue: +per-war for each declaration, decays by 1 every decay-days days.
+    per-war: 1
+    decay-days: 7
+    # Per fatigue point: upkeep 25 % more expensive, base HP regeneration slower (÷1.25).
+    upkeep-per-point: 0.25
+    regen-slowdown-per-point: 0.25
+  # Shield after a capture: base blocks don't lose HP, war cannot be declared.
+  shield-hours: 48
+  capture:
+    # Heart capture: attackers must stand within the radius for this many seconds (prime time only).
+    radius: 3
+    seconds: 180
+    # How many seconds of progress decay per second with no attackers in the radius.
+    decay-per-second: 1
+
+vassalage:
+  days: 14
+  tribute:
+    # Share of the vassal's collector output and of its trade route cargo that goes to the tribute treasury.
+    collectors: 0.2
+    trade: 0.2
+
+patronage:
+  # Patronage heart (/war patron): costs emeralds from upkeep; the placing clan becomes the patron's vassal.
+  days: 14
+  cost-emeralds: 16
+  max-vassals: 2
+
+craft:
+  # Enchanting and anvil: the result "matures" in the station this many minutes per level (30 levels = 60 min).
+  # The timer runs offline too; if the station is broken, the item drops.
+  enchant-minutes-per-level: 2
+  anvil-minutes-per-level: 2
+  cooking:
+    # How many times longer than vanilla: food (furnace, smoker, campfire) and other smelting.
+    food-multiplier: 4
+    smelt-multiplier: 1
+  brewing-multiplier: 4
+  # Tables, anvils and brewing stands — only on your own base and no more than the per-clan limit.
+  stations-only-in-base: true
+  station-limits:
+    enchanting: 2
+    anvil: 2
+    brewing: 3
+
+plot:
+  # Plot heart (/plot heart): placed by the leader inside their base. A plot is a box with the heart at its centre.
+  # Inside, only invited players and leaders build, break and open containers; outsiders follow siege rules.
+  material: TARGET
+  max-size: 48
+  max-per-clan: 20
+  # Rating (/plot rate): Σ material value × √count. No more often than once per rate-cooldown-hours.
+  rate-cooldown-hours: 24
+  default-block-value: 1
+  block-values:
+    DIRT: 0.2
+    GRASS_BLOCK: 0.2
+    COBBLESTONE: 0.5
+    STONE: 0.5
+    NETHERRACK: 0.3
+    "*_GLAZED_TERRACOTTA": 3
+    "*_BANNER": 3
+    "*_STAINED_GLASS": 2
+    "*_CANDLE": 2
+    LANTERN: 2
+    BOOKSHELF: 2
+    FLOWER_POT: 2
+  # Clan prestige = sum of tiers of its best prestige-plots plots; each point gives +energy-per-prestige energy per hour.
+  prestige-plots: 5
+  energy-per-prestige: 1
+
+newbie:
+  # A clan's first base (no member has used protection or been in a clan whose protection expired)
+  # is invulnerable for days days. While protection lasts: territory radius is radius, no nodes, at most max-containers.
+  # Ends early when: an experienced player is accepted (with confirmation), a proxy is placed, or war is declared.
+  days: 5
+  radius: 16
+  max-containers: 6
+  first-heart-cost: 0
+
+proxy:
+  # A proxy (/clan proxy) is a separate outpost base: expensive, vulnerable at once, breakable by siege.
+  radius: 16
+  material: CRYING_OBSIDIAN
+  activation-minutes: 15
+  cost-emeralds: 64
+  per-day: 6
+  max-per-clan: 2
+
+events:
+  # Event sites are set by an admin: /event add <wave|chest> <name> [radius], looking at the core block
+  # (structures are built on the map in advance). The list, states and timers are visible to everyone: /event.
+  wave:
+    # Waves (usually in the Nether): right-click on the core starts the waves; after the last one the reward drops at the core.
+    cooldown-hours: 6
+    # Failure: a wave is not cleared within timeout-seconds, or no players are in the radius for abandon-seconds.
+    timeout-seconds: 180
+    abandon-seconds: 60
+    waves:
+      - {BLAZE: 3, MAGMA_CUBE: 2}
+      - {WITHER_SKELETON: 3, BLAZE: 2}
+      - {WITHER_SKELETON: 4, PIGLIN_BRUTE: 1}
+    # The reward is weakened and tied to resources: not a shortcut to netherite.
+    loot:
+      - {item: GOLD_INGOT, min: 6, max: 16}
+      - {item: QUARTZ, min: 16, max: 48}
+      - {item: BLAZE_ROD, min: 2, max: 6}
+      - {item: EMERALD, min: 2, max: 6, chance: 0.5}
+      - {item: ANCIENT_DEBRIS, min: 1, max: 1, chance: 0.1}
+  chest:
+    # Timed chests (overworld): every interval-hours an announcement; after announce-minutes the chests
+    # in the radius are filled with loot and open for open-minutes. Until then the chests are locked.
+    interval-hours: 8
+    announce-minutes: 30
+    open-minutes: 20
+    loot:
+      - {item: IRON_INGOT, min: 4, max: 12}
+      - {item: GOLD_INGOT, min: 2, max: 6, chance: 0.7}
+      - {item: EMERALD, min: 2, max: 8, chance: 0.6}
+      - {item: DIAMOND, min: 1, max: 2, chance: 0.2}
+      - {item: SADDLE, min: 1, max: 1, chance: 0.3}
+      - {item: GOLDEN_APPLE, min: 1, max: 2, chance: 0.3}
+  trader:
+    # Chance that a trader with custom deals appears when the chests open, and how many minutes it stays
+    # (no longer than the chests are open).
+    chance: 0.5
+    minutes: 20
+    trades:
+      - {buy: ["EMERALD:8"], sell: "DIAMOND:1", uses: 3}
+      - {buy: ["EMERALD:4", "LEATHER:8"], sell: "SADDLE:1", uses: 2}
+      - {buy: ["IRON_INGOT:16"], sell: "EMERALD:3", uses: 5}
+      - {buy: ["EMERALD:6"], sell: "EXPERIENCE_BOTTLE:8", uses: 2}
+
+web:
+  # Built-in web portal: map of bases, events and players, politics, trade routes. Login — /site in game.
+  enabled: true
+  # Address and port the site listens on. 0.0.0.0 — reachable from outside (open the port in your firewall/hosting).
+  bind: 0.0.0.0
+  port: 8124
+  # Address players will see in the login link (server domain or IP).
+  public-url: http://localhost:8124
+  # Which world to show on the map.
+  world: world
+  token-minutes: 5
+  session-days: 7
+  scouting:
+    # Extra daily upkeep for scouting levels 1, 2, 3.
+    cost-per-day: [4, 8, 16]
+    # Delay for other players' positions: levels 1–2 and level 3.
+    slow-delay-seconds: 60
+    fast-delay-seconds: 5
+
+siege:
+  # Siege only during war (between the warring clans). false — siege is always allowed (for testing).
+  require-war: true

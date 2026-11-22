@@ -1,0 +1,44 @@
+name: Hearthold
+version: '${version}'
+main: dev.hearthold.HeartholdPlugin
+api-version: '26.3'
+description: Hearthold clans, base hearts, block HP and economy
+libraries:
+  - org.xerial:sqlite-jdbc:${sqliteVersion}
+
+commands:
+  clan:
+    description: Clan management
+    usage: /clan <create|invite|accept|leave|info|heart|node|collector|proxy|ally|unally|trust|untrust>
+  hearthold:
+    description: Hearthold admin commands
+    usage: /hearthold <reload|hp|prime|zones|energy|upkeep|buyer|region|ores|pregen|potion>
+    permission: hearthold.admin
+    aliases: [hh]
+  compass:
+    description: Hearthold compass and its menu
+    usage: /compass
+  site:
+    description: Web portal login link and clan scouting level
+    usage: /site [scouting <0-3>]
+  event:
+    description: 'Events: sites, status, timers'
+    usage: /event [list|add|remove|start]
+  plot:
+    description: Plots inside a base and building rating
+    usage: /plot <heart|info|name|size|invite|kick|list|rate|top>
+  war:
+    description: Wars, vassalage, tribute, patronage
+    usage: /war <declare|peace|end|status|journal|vassals|tribute|patron>
+  trade:
+    description: Trade routes, treasury, caravans
+    usage: /trade
+  weight:
+    description: How much your load weighs
+    usage: /weight
+    aliases: [ves]
+
+permissions:
+  hearthold.admin:
+    description: Hearthold admin commands
+    default: op
