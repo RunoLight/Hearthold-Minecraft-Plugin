@@ -7,6 +7,7 @@
   <img src="https://img.shields.io/badge/Java-25-e76f00" alt="Java 25">
   <img src="https://img.shields.io/badge/languages-EN%20%7C%20RU-2ea043" alt="English and Russian">
   <img src="https://img.shields.io/badge/status-alpha-8957e5" alt="Alpha">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="MIT license"></a>
 </p>
 
 <h3 align="center">The clan server where a living neighbour is worth more than a dead one.</h3>
@@ -122,5 +123,5 @@ Building from source, configuration, commands and permissions: **[technical docu
 
 <p align="center">
   <sub>Inspired by <b>Minto</b>, a clan server whose seasons kept ending with an empty map. Hearthold is a redesign built around one idea: make clans depend on each other.</sub><br>
-  <sub><a href="docs/technical.md">Technical docs</a> · <a href="docs/design.md">Design document</a> · <a href="AGENTS.md">Contributing</a></sub>
+  <sub><a href="docs/technical.md">Technical docs</a> · <a href="docs/design.md">Design document</a> · <a href="AGENTS.md">Contributing</a> · <a href="LICENSE">MIT license</a></sub>
 </p>

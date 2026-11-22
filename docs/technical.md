@@ -17,6 +17,7 @@ Hearthold is a Paper 26.3 plugin (Java 25, SQLite) for clan-war survival servers
 - [Project layout](#project-layout)
 - [Documentation](#documentation)
 - [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -151,3 +152,7 @@ docs/          design document
 ## Contributing
 
 Issues and pull requests are welcome. Before opening a PR, read [AGENTS.md](../AGENTS.md): every commit ends with a `Design-doc:` line, and any rule change must be reflected in [docs/design.md](design.md) in the same commit. New player-facing text goes through `Lang.tr` with keys in both `lang/en` and `lang/ru`.
+
+## License
+
+Hearthold is released under the [MIT license](../LICENSE).
