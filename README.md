@@ -6,6 +6,8 @@
 
 Paper 26.3 · Java 25 · SQLite · English / Русский
 
+<img width="1456" height="720" alt="Healthold Minecraft Preview" src="https://github.com/user-attachments/assets/ee0127a9-8913-4237-9521-36dd60d37286" />
+
 </div>
 
 ---
